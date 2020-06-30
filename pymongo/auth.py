@@ -45,6 +45,7 @@ from bson.py3compat import string_type, _unicode, PY3
 from bson.son import SON
 from pymongo.errors import ConfigurationError, OperationFailure
 from pymongo.saslprep import saslprep
+from pymongo.md5 import md5sum
 
 
 MECHANISMS = frozenset(
@@ -326,10 +327,7 @@ def _password_digest(username, password):
         raise TypeError("password must be an "
                         "instance of  %s" % (string_type.__name__,))
 
-    md5hash = hashlib.md5()
-    data = "%s:mongo:%s" % (username, password)
-    md5hash.update(data.encode('utf-8'))
-    return _unicode(md5hash.hexdigest())
+    return md5sum("%s:mongo:%s" % (username, password))
 
 
 def _auth_key(nonce, username, password):
